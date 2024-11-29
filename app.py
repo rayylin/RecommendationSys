@@ -26,7 +26,14 @@ def index():
 
     if selected_category:
         cursor.execute(
-            "SELECT ProductName, ImageSource FROM Products WHERE Category = ?",
+            """SELECT TOP 9 ProductName
+                           ,ImageSource
+                           ,OrgPrice
+                           ,NewPrice
+                           ,CASE WHEN INVENTORY > 0 THEN ''
+                            ELSE 'Sold Out' END AS INVENTORY
+                 FROM Products 
+                WHERE Category = ?""",
             selected_category,
         )
         products = cursor.fetchall()

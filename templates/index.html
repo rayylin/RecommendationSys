@@ -7,21 +7,40 @@
     <style>
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
         .product {
             text-align: center;
         }
         .product img {
-            width: 100px;
-            height: 100px;
+            width: 140px;
+            height: 140px;
         }
+        .header {
+            display: flex;
+            align-items: center; /* Vertically align items */
+            gap: 20px; /* Space between the image and title */
+        }
+
+        .logo {
+            width: 100px; /* Adjust the size of the logo */
+            height: auto;
+        }
+
+        h1 {
+            margin: 0; 
+            text-align: center;
+        }
+        
     </style>
 </head>
 <body>
-    <h1>Online Store</h1>
-    <form method="POST">
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+        <h1>Online Store</h1>
+    </div>
+    <form method="POST" style="padding-top: 20px;">
         <label for="category">Select Category:</label>
         <select name="category" id="category" onchange="this.form.submit()">
             <option value="">-- Select --</option>
@@ -32,12 +51,13 @@
             {% endfor %}
         </select>
     </form>
-
-    <div class="grid">
+    <div class="grid" >
         {% for product in products %}
         <div class="product">
-            <img src="{{ product.ProductImage }}" alt="{{ product.ProductName }}">
+            <img src="{{ product.ImageSource }}" alt="{{ product.ProductName }}">
             <p>{{ product.ProductName }}</p>
+            <p><s>{{product.OrgPrice}}</s> -> {{product.NewPrice}}</p>
+            <p style="color:red;">{{ product.INVENTORY }}</p>
         </div>
         {% endfor %}
     </div>
