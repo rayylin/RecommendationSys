@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Store</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .product {
+            text-align: center;
+        }
+        .product img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Online Store</h1>
+    <form method="POST">
+        <label for="category">Select Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">-- Select --</option>
+            {% for category in categories %}
+            <option value="{{ category.CategoryID }}" {% if request.form.category == category.CategoryID|string %}selected{% endif %}>
+                {{ category.CategoryName }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div class="grid">
+        {% for product in products %}
+        <div class="product">
+            <img src="{{ product.ProductImage }}" alt="{{ product.ProductName }}">
+            <p>{{ product.ProductName }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
