@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.ProductName }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start; /* Align items to the top */
+            
+        }
+
+        .product-image {
+            flex: 1; /* Take up space proportionally */
+        }
+
+        .product-image img {
+            max-width: 200%;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .product-details {
+            flex: 2; /* Take up more space for details */
+        }
+
+        .product-details h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .product-details p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e63946; /* Highlight price in red */
+        }
+
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product img {
+            width: 140px;
+            height: 140px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Product Image -->
+        <div class="product-image">
+            <img src="{{ product.ImageSource }}" alt="{{ product.ProductName }}">
+        </div>
+
+        <!-- Product Details -->
+        <div class="product-details">
+            <h1>{{ product.ProductName }}</h1>
+            <p><strong>Original Price:</strong> <s>${{ product.OrgPrice }}</s></p>
+            <p class="price">Price: ${{ product.NewPrice }}</p>            
+            <p><strong>Inventory:</strong> {{ product.Inventory }}</p>
+            <p><strong>Description:</strong> {{ product.Description }}</p>
+
+            <div class="button-container">
+                <button onclick="addToCart('{{product.ProductName}}')">Add to Cart</button>
+            </div>
+        </div>        
+    </div>
+
+    <br>
+    <h2>You may also like those products:</h2>
+    <br>
+    <div class="container">
+        
+        <!-- related products -->
+        <div class="grid" >
+            {% for product in related_products %}
+            <div class="product" onclick="redirectToProduct('{{ product.ProductName }}')" style="cursor: pointer;">
+                <img src="{{ product.ImageSource }}" alt="{{ product.ProductName }}">
+                <p>{{ product.ProductName }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function addToCart(productName) {
+            alert(`Product ID ${productName} added to cart!`);            
+        }
+
+        function redirectToProduct(ProductName) {            
+            window.location.href = `/product/${ProductName}`;
+        }
+    </script>
+</body>
+</html>

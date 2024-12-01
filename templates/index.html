@@ -19,26 +19,100 @@
         }
         .header {
             display: flex;
-            align-items: center; /* Vertically align items */
-            gap: 20px; /* Space between the image and title */
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8f8f8; /* Optional background color */
+            position: relative; /* Ensures centering flexibility for h1 */
+        }
+
+        .header h1 {
+            flex: 1;
+            text-align: center;
+            font-size: 24px; /* Adjust font size as needed */
+            margin: 0;
+        }
+
+        /* Style for the cart on the right */
+        .cart {
+            height: 40px; /* Adjust as needed */
+            cursor: pointer; /* Optional, for interactive styling */
         }
 
         .logo {
-            width: 100px; /* Adjust the size of the logo */
-            height: auto;
+            width: 40px; /* Adjust the size of the logo */
+            height: 40px;
+            gap: 10px;
         }
-
+    
         h1 {
             margin: 0; 
             text-align: center;
         }
+
+
+        #cartPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        #cartOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .cart-item {
+            margin: 10px 0;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            background: red;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+
+
         
     </style>
 </head>
 <body>
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+        
+        <form method="POST" style="padding-left: 20px;">
+            <label for="zip">Select Your Location:</label>
+            <br>
+            <select name="zip" id="zip" onchange="this.form.submit()">
+                <option value="">-- Select --</option>
+                {% for code in codes %}
+                <option value="{{ code.zipcode }}" {% if request.form.category ==  code.zipcode|string %}selected{% endif %}>
+                    {{ code.zipcode }}
+                </option>
+                {% endfor %}
+            </select>
+            <br>
+        </form>
         <h1>Online Store</h1>
+        <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
     </div>
     <form method="POST" style="padding-top: 20px;">
         <label for="category">Select Category:</label>
@@ -51,15 +125,71 @@
             {% endfor %}
         </select>
     </form>
-    <div class="grid" >
+    <div class="grid">
         {% for product in products %}
-        <div class="product">
+        <div class="product" onclick="redirectToProduct('{{ product.ProductName }}')" style="cursor: pointer;">
             <img src="{{ product.ImageSource }}" alt="{{ product.ProductName }}">
             <p>{{ product.ProductName }}</p>
-            <p><s>{{product.OrgPrice}}</s> -> {{product.NewPrice}}</p>
+            <p><s>{{ product.OrgPrice }}</s> -> {{ product.NewPrice }}</p>
             <p style="color:red;">{{ product.INVENTORY }}</p>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Overlay -->
+    <div id="cartOverlay"></div>
+
+    <!-- Popup -->
+    <div id="cartPopup">
+        <h2>Your Cart</h2>
+        <div id="cartItems"></div>
+        <button class="close-btn" onclick="closeCart()">Close</button>
+    </div>
+
+    <script>        
+        function redirectToProduct(ProductName) {            
+            window.location.href = `/product/${ProductName}`;
+        }
+
+        const viewCartButton = document.getElementById('viewCart');
+        const cartPopup = document.getElementById('cartPopup');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartItems = document.getElementById('cartItems');
+
+        viewCartButton.addEventListener('click', () => {
+            
+            popupCart()
+            
+        });
+
+        function popupCart(){
+
+            // Show popup and overlay
+            cartPopup.style.display = 'block';
+            cartOverlay.style.display = 'block';
+
+            // Fetch cart data
+            fetch('/cart')
+                .then(response => response.json())
+                .then(data => {
+                    cartItems.innerHTML = ''; // Clear previous content
+                    data.forEach(item => {
+                        cartItems.innerHTML += `
+                            <div class="cart-item">
+                                <strong>${item.name}</strong>
+                                <p>Price: $${item.price}</p>
+                                <p>Quantity: ${item.quantity}</p>
+                            </div>
+                        `;
+                    });
+                });
+        }
+
+        function closeCart() {
+            cartPopup.style.display = 'none';
+            cartOverlay.style.display = 'none';
+        }
+    </script>
+    </script>
 </body>
 </html>
