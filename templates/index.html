@@ -93,7 +93,9 @@
             border-radius: 4px;
         }
 
-
+        .hidden {
+            display: none;
+        }
 
         
     </style>
@@ -138,7 +140,10 @@
                 <p><s>{{ product.OrgPrice }}</s> -> {{ product.NewPrice }}</p>
             </div>
             <div class="button-container">
-                <button onclick="addToCart('{{product.ProductName}}')">Add to Cart</button>
+                <button id="addToCartButton"  
+                        onclick="addToCart('{{product.ProductName}}')"
+                         >Add to Cart
+                    </button>
             </div>
             <p style="color:red;">{{ product.INVENTORY }}</p>
         </div>
