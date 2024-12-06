@@ -54,8 +54,8 @@ def index():
 @app.route('/product/<string:product_id>')
 def product_page(product_id):
     # Query the database or fetch product details using the product_id
-    product, related_products = get_product_and_related(product_id)
-    return render_template('product.html', product=product, related_products=related_products)
+    product, related_products, codes = get_product_and_related(product_id)
+    return render_template('product.html', product=product, related_products=related_products, codes=codes)
 
 def get_product_and_related(product_id):
     
@@ -93,10 +93,10 @@ def get_product_and_related(product_id):
     } if product_row else None
         
     cursor.execute("""
-        SELECT TOP (10)
-               CASE WHEN Item = 'coffee' THEN Item2
+        SELECT TOP (6)
+               CASE WHEN Item = ? THEN Item2
 	           ELSE Item  END AS 'ProductName'
-	          ,CASE WHEN Item = 'coffee' THEN C.ImageSource
+	          ,CASE WHEN Item = ? THEN C.ImageSource
 	           ELSE B.ImageSource  END AS 'ImageSource'
           FROM [RecSys].[dbo].[GroceryRelationship] A
          INNER JOIN [RecSys].[dbo].[Products] B
@@ -106,11 +106,11 @@ def get_product_and_related(product_id):
          WHERE [ITEM] = ?
             OR [Item2] = ?
          ORDER BY Lift DESC
-    """, product_id, product_id)
+    """, product_id, product_id, product_id, product_id)
     
     # Fetch the data and convert it to a dictionary
     related_rows  = cursor.fetchall()
-    conn.close()
+    
 
     related_products = [
         {
@@ -118,8 +118,16 @@ def get_product_and_related(product_id):
             'ImageSource': row.ImageSource
         }  for row in related_rows
     ]
+
+
+    cursor.execute("""SELECT [City] + ', ' + [StateCode] + ', ' + [ZipCode] AS zipcode
+                        FROM [RecSys].[dbo].[ZipCode]
+                       WHERE [Status] = 'A'""")
+    codes = cursor.fetchall()
+
+    conn.close()
     
-    return product, related_products
+    return product, related_products, codes
 
 
 

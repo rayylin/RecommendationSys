@@ -78,10 +78,62 @@
             width: 140px;
             height: 140px;
         }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8f8f8; /* Optional background color */
+            position: relative; /* Ensures centering flexibility for h1 */
+        }
+
+        .header h1 {
+            flex: 1;
+            text-align: center;
+            font-size: 24px; /* Adjust font size as needed */
+            margin: 0;
+        }
+
+        /* Style for the cart on the right */
+        .cart {
+            height: 40px; /* Adjust as needed */
+            cursor: pointer; /* Optional, for interactive styling */
+        }
+
+        .logo {
+            width: 40px; /* Adjust the size of the logo */
+            height: 40px;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
+    <!-- banner -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
+        
+        <form method="POST" style="padding-left: 20px;">
+            <label for="zip">Select Your Location:</label>
+            <br>
+            <select name="zip" id="zip" onchange="this.form.submit()">
+                <option value="">-- Select --</option>
+                {% for code in codes %}
+                <option value="{{ code.zipcode }}" {% if request.form.category ==  code.zipcode|string %}selected{% endif %}>
+                    {{ code.zipcode }}
+                </option>
+                {% endfor %}
+            </select>
+            <br>
+        </form>
+        <h1>Online Store</h1>
+        <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
+        <br>
+        
+    </div>
     <div class="container">
+        
+
         <!-- Product Image -->
         <div class="product-image">
             <img src="{{ product.ImageSource }}" alt="{{ product.ProductName }}">
