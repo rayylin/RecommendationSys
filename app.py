@@ -134,9 +134,61 @@ def get_product_and_related(product_id):
 
 @app.route('/cart')
 def cart():
-
+    userid = "ray"
+    conn = pyodbc.connect(
+    'DRIVER={ODBC Driver 17 for SQL Server};'
+    'SERVER=ray\SQLEXPRESS;'
+    'DATABASE=RecSys;'
+    'Trusted_Connection=yes;'
+    )
+    cursor = conn.cursor()
     
-    return jsonify(cart_data)
+    # Query the database for the product information
+    cursor.execute("""
+      SELECT A.[UserID]
+            ,A.[ProductID]
+            ,A.[quantity]
+            ,A.[updatetime]
+            ,B.[ProductName]
+	        ,B.[NewPrice]
+        FROM [RecSys].[dbo].[Cart] A
+        INNER JOIN [RecSys].[dbo].[Products] B
+            ON A.[ProductID] = B.[productID]
+        WHERE A.[UserID] = ?
+    """, userid)
+
+    carts  = cursor.fetchall()
+
+    conn.close()
+
+    cd = []
+    
+    for cart in carts:
+        cd.append({"id": cart[1], "name": cart[4], "price": cart[5], "quantity": cart[2]})
+
+    return jsonify(cd)
+
+
+@app.route('/add-to-cart', methods=['POST'])
+def add_to_cart():
+    data = request.get_json()
+    product = data['product']
+    quantity = data["quantity"]
+
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=ray\SQLEXPRESS;'
+        'DATABASE=RecSys;'
+        'Trusted_Connection=yes;'
+        )
+    cursor = conn.cursor()
+    cmd = "INSERT INTO [RecSys].[dbo].[Cart] VALUES (?, ?, ?, GETDATE())"
+    cursor.execute(cmd, ('ray', product, quantity))
+    conn.commit() 
+    
+    conn.close()
+
+    return {"message": f"{product} added to cart successfully"}
 
 
 if __name__ == '__main__':

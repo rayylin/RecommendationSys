@@ -96,6 +96,31 @@
         .hidden {
             display: none;
         }
+        
+        .equal-height {
+            height: 30px; /* Set a consistent height */
+            line-height: 1.2; /* Adjust for vertical alignment */
+            padding: 0 0px; /* Add some padding for better spacing */
+            box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+            font-size: 16px; /* Ensure text size is consistent */
+            text-align: center; /* Center-align text in textarea */
+        }
+
+        .qtyBxt {
+            width: 50px; /* Set a fixed width for the textarea */
+            resize: none; /* Prevent resizing of the textarea */
+        }
+
+        .button-container button {
+            width: 40px; /* Set a consistent width for the buttons */
+            border: 1px solid #ccc; /* Optional: add borders for visibility */
+            background-color: #f8f8f8; /* Optional: add a background color */
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #e0e0e0; /* Optional: change background color on hover */
+        }
 
         
     </style>
@@ -140,8 +165,13 @@
                 <p><s>{{ product.OrgPrice }}</s> -> {{ product.NewPrice }}</p>
             </div>
             <div class="button-container">
+                <button id="minusBtn-{{ product.ProductName }}" class="equal-height" onclick="minusone('minusBtn-{{ product.ProductName }}')"> - </button>
+                <textarea id="qtybxt-{{ product.ProductName }}" class="qtyBxt equal-height">1</textarea>
+                <button id="AddBtn-{{ product.ProductName }}" class="equal-height" onclick="addone('AddBtn-{{ product.ProductName }}')"> + </button>
+            </div>
+            <div >
                 <button id="addToCartButton"  
-                        onclick="addToCart('{{product.ProductName}}')"
+                        onclick="addToCart('{{product.ProductName}}', 'qtybxt-{{ product.ProductName }}')"
                          >Add to Cart
                     </button>
             </div>
@@ -191,7 +221,7 @@
                         cartItems.innerHTML += `
                             <div class="cart-item">
                                 <strong>${item.name}</strong>
-                                <p>Price: $${item.price}</p>
+                                <p>Unit Price: $${item.price}</p>
                                 <p>Quantity: ${item.quantity}</p>
                             </div>
                         `;
@@ -204,10 +234,63 @@
             cartOverlay.style.display = 'none';
         }
 
-        function addToCart(productName) {
-            alert(`Product ID ${productName} added to cart!`);            
+        function addToCart(productName, textbxtid) {
+
+            const textarea = document.getElementById(textbxtid);
+
+            let currentQty = parseInt(textarea.value.trim());
+            if (isNaN(currentQty)) {
+                currentQty = 1; // Default to 1 if invalid
+            }
+
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product: productName, quantity: currentQty })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => console.error('Error:', error));
         }
-    </script>
+        function addone(buttonId) {
+            // Get the parent element of the button to find the associated textarea
+            const button = document.getElementById(buttonId);
+            const parent = button.parentElement;
+            const textarea = parent.querySelector(".qtyBxt");
+
+            // Increment the quantity
+            let currentQty = parseInt(textarea.value.trim());
+            if (isNaN(currentQty)) {
+                currentQty = 1; // Default to 1 if invalid
+            }
+            textarea.value = currentQty + 1;
+        }
+
+        function minusone(buttonId) {
+            // Get the parent element of the button to find the associated textarea
+            const button = document.getElementById(buttonId);
+            const parent = button.parentElement;
+            const textarea = parent.querySelector(".qtyBxt");
+
+            // Decrement the quantity (minimum value is 1)
+            let currentQty = parseInt(textarea.value.trim());
+            if (isNaN(currentQty) || currentQty <= 1) {
+                textarea.value = 1; // Default to 1 if invalid or at minimum
+            } else {
+                textarea.value = currentQty - 1;
+            }
+        }
+
+        function validateQty(textarea) {
+            let currentQty = parseInt(textarea.value.trim());
+            if (isNaN(currentQty) || currentQty <= 0) {
+                textarea.value = 1; // Reset to 1 if invalid
+            }
+        }
     </script>
 </body>
 </html>
