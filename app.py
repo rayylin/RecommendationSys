@@ -41,6 +41,7 @@ def index():
                            ,ImageSource
                            ,OrgPrice
                            ,NewPrice
+                           ,ProductID
                            ,CASE WHEN INVENTORY > 0 THEN ''
                             ELSE 'Sold Out' END AS INVENTORY
                  FROM Products 
@@ -182,8 +183,8 @@ def add_to_cart():
         'Trusted_Connection=yes;'
         )
     cursor = conn.cursor()
-    cmd = "INSERT INTO [RecSys].[dbo].[Cart] VALUES (?, ?, ?, GETDATE())"
-    cursor.execute(cmd, ('ray', product, quantity))
+    cmd = f"EXEC [RecSys].[dbo].[UpdateCart] 'ray','{product}', '{quantity}'"
+    cursor.execute(cmd)
     conn.commit() 
     
     conn.close()
