@@ -223,7 +223,9 @@
                                 <strong>${item.name}</strong>
                                 <p>Unit Price: $${item.price}</p>
                                 <p>Quantity: ${item.quantity}</p>
+                                <button id="AddBtn-${item.name}" onclick="removeItem('${item.id}')"> Remove </button>
                             </div>
+                            
                         `;
                     });
                 });
@@ -291,6 +293,26 @@
                 textarea.value = 1; // Reset to 1 if invalid
             }
         }
+
+        function removeItem(productid){
+            
+            alert(productid);
+            fetch('/delete-from-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productid: productid })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => console.error('Error:', error));
+            
+            popupCart();
+        }
+
     </script>
 </body>
 </html>

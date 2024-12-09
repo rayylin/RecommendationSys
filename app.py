@@ -188,13 +188,41 @@ def add_to_cart():
 
     cmd = "EXEC [RecSys].[dbo].[UpdateCart] ?, ?, ?"
     params = (userid, product, quantity)
-    
+
     cursor.execute(cmd, params)
 
     conn.commit()
     conn.close()
 
     return {"message": f"{product} added to cart successfully"}
+
+
+@app.route('/delete-from-cart', methods=['POST'])
+def delete_from_cart():
+    userid = "ray"
+    data = request.get_json()
+    productid = data['productid']
+
+    conn = pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=ray\SQLEXPRESS;'
+        'DATABASE=RecSys;'
+        'Trusted_Connection=yes;'
+        )
+    
+    cursor = conn.cursor()
+
+    cmd = "EXEC [RecSys].[dbo].[DeleteCart] ?, ?"
+    params = (userid, productid)
+    
+    cursor.execute(cmd, params)
+
+    conn.commit()
+    conn.close()
+
+    return {"message": f"{productid} added to cart successfully"}
+
+
 
 
 if __name__ == '__main__':
