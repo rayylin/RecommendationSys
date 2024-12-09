@@ -172,6 +172,7 @@ def cart():
 
 @app.route('/add-to-cart', methods=['POST'])
 def add_to_cart():
+    userid = "ray"
     data = request.get_json()
     product = data['product']
     quantity = data["quantity"]
@@ -182,11 +183,15 @@ def add_to_cart():
         'DATABASE=RecSys;'
         'Trusted_Connection=yes;'
         )
-    cursor = conn.cursor()
-    cmd = f"EXEC [RecSys].[dbo].[UpdateCart] 'ray','{product}', '{quantity}'"
-    cursor.execute(cmd)
-    conn.commit() 
     
+    cursor = conn.cursor()
+
+    cmd = "EXEC [RecSys].[dbo].[UpdateCart] ?, ?, ?"
+    params = (userid, product, quantity)
+    
+    cursor.execute(cmd, params)
+
+    conn.commit()
     conn.close()
 
     return {"message": f"{product} added to cart successfully"}
