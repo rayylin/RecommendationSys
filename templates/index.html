@@ -212,6 +212,11 @@
             cartPopup.style.display = 'block';
             cartOverlay.style.display = 'block';
 
+            // Update the cart content
+            updateCartContent();
+        }
+
+        function updateCartContent() {
             // Fetch cart data
             fetch('/cart')
                 .then(response => response.json())
@@ -225,7 +230,6 @@
                                 <p>Quantity: ${item.quantity}</p>
                                 <button id="AddBtn-${item.name}" onclick="removeItem('${item.id}')"> Remove </button>
                             </div>
-                            
                         `;
                     });
                 });
@@ -296,7 +300,7 @@
 
         function removeItem(productid){
             
-            alert(productid);
+            // alert(productid);
             fetch('/delete-from-cart', {
                 method: 'POST',
                 headers: {
@@ -304,9 +308,12 @@
                 },
                 body: JSON.stringify({ productid: productid })
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
+            .then(response => {
+                if (response.ok) {
+                    updateCartContent(); // Refresh the cart content
+                } else {
+                    console.error('Failed to remove item');
+                }
             })
             .catch(error => console.error('Error:', error));
             
