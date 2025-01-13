@@ -37,6 +37,8 @@
         .cart {
             height: 40px; /* Adjust as needed */
             cursor: pointer; /* Optional, for interactive styling */
+            margin-right: 10px;
+            border: 10px;
         }
 
         .logo {
@@ -144,6 +146,7 @@
         </form>
         <h1>Online Store</h1>
         <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
+        <img src="{{ url_for('static', filename='chatbot.jpg') }}" class="cart" alt="AI assistant" onclick="popupChatbot()">
     </div>
     <form method="POST" style="padding-top: 20px;">
         <label for="category">Select Category:</label>
@@ -182,6 +185,13 @@
 
     <!-- Overlay -->
     <div id="cartOverlay"></div>
+
+    <!-- Popup -->
+    <div id="cartPopup">
+        <h2>Your Cart</h2>
+        <div id="cartItems"></div>
+        <button class="close-btn" onclick="closeCart()">Close</button>
+    </div>
 
     <!-- Popup -->
     <div id="cartPopup">
@@ -319,6 +329,17 @@
             
             popupCart();
         }
+
+        function popupChatbot(){
+
+        // Show popup and overlay
+        cartPopup.style.display = 'block';
+        cartOverlay.style.display = 'block';
+
+        // Update the cart content
+        updateCartContent();
+        }
+
 
     </script>
 </body>
