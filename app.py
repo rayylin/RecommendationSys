@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, render_template, request
 import pyodbc
 
+from config import key1, openaikey
+
+okey = openaikey
+
+
 app = Flask(__name__)
 
 cart_data = [
