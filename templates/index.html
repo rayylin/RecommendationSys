@@ -194,9 +194,10 @@
     </div>
 
     <!-- Popup -->
-    <div id="cartPopup">
-        <h2>Your Cart</h2>
+    <div id="BotPopup">
+        <h2>Ai Assistant</h2>
         <div id="cartItems"></div>
+        <textarea id="userinput"></textarea>
         <button class="close-btn" onclick="closeCart()">Close</button>
     </div>
 
@@ -210,11 +211,25 @@
         const cartOverlay = document.getElementById('cartOverlay');
         const cartItems = document.getElementById('cartItems');
 
+        
+
+
         viewCartButton.addEventListener('click', () => {
             
             popupCart()
             
         });
+
+        
+        const viewBotButton = document.getElementById('viewBot');
+        const BotPopup = document.getElementById('BotPopup');
+
+        viewBotButton.addEventListener('click', () => {
+            
+            popupBot()
+            
+        });
+
 
         function popupCart(){
 
@@ -224,6 +239,16 @@
 
             // Update the cart content
             updateCartContent();
+        }
+
+        function popupBot(){
+
+        // Show popup and overlay
+        BotPopup.style.display = 'block';
+        BotPopup.style.display = 'block';
+
+        // Update the cart content
+        updateBotContent();
         }
 
         function updateCartContent() {
@@ -337,9 +362,28 @@
         cartOverlay.style.display = 'block';
 
         // Update the cart content
-        updateCartContent();
+        updateBotContent();
         }
 
+        function updateBotContent() {
+            // Fetch cart data
+            fetch('/cart')
+                .then(response => response.json())
+                .then(data => {
+                    cartItems.innerHTML = ''; // Clear previous content
+                    data.forEach(item => {
+                        cartItems.innerHTML += `
+                            <div class="cart-item">
+                                <strong>AI Assist</strong>
+                                <strong>${item.name}</strong>
+                                <p>Unit Price: $${item.price}</p>
+                                <p>Quantity: ${item.quantity}</p>
+                                <button id="AddBtn-${item.name}" onclick="removeItem('${item.id}')"> Remove </button>
+                            </div>
+                        `;
+                    });
+                });
+        }
 
     </script>
 </body>
