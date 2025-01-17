@@ -82,6 +82,18 @@
             z-index: 999;
         }
 
+        #botOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+
         .cart-item {
             margin: 10px 0;
         }
@@ -146,7 +158,7 @@
         </form>
         <h1>Online Store</h1>
         <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
-        <img src="{{ url_for('static', filename='chatbot.jpg') }}" class="cart" alt="AI assistant" onclick="popupChatbot()">
+        <img src="{{ url_for('static', filename='chatbot.jpg') }}" class="cart" alt="AI assistant" onclick="popupBot()">
     </div>
     <form method="POST" style="padding-top: 20px;">
         <label for="category">Select Category:</label>
@@ -193,11 +205,14 @@
         <button class="close-btn" onclick="closeCart()">Close</button>
     </div>
 
+    <!-- Overlay -->
+    <div id="botOverlay"></div>
+
     <!-- Popup -->
-    <div id="cartPopup">
-        <h2>Your Cart</h2>
+    <div id="botPopup">
+        <h2>Your bot</h2>
         <div id="cartItems"></div>
-        <button class="close-btn" onclick="closeCart()">Close</button>
+        <button class="close-btn" onclick="closeBot()">Close</button>
     </div>
 
     <script>        
@@ -210,12 +225,6 @@
         const cartOverlay = document.getElementById('cartOverlay');
         const cartItems = document.getElementById('cartItems');
 
-        viewCartButton.addEventListener('click', () => {
-            
-            popupCart()
-            
-        });
-
         function popupCart(){
 
             // Show popup and overlay
@@ -225,6 +234,33 @@
             // Update the cart content
             updateCartContent();
         }
+
+        function closeCart() {
+            cartPopup.style.display = 'none';
+            cartOverlay.style.display = 'none';
+        }
+
+
+        const botPopup = document.getElementById('botPopup');
+        const botOverlay = document.getElementById('botOverlay');
+
+        function popupBot(){
+
+            // Show popup and overlay
+            botPopup.style.display = 'block';
+            botOverlay.style.display = 'block';
+
+            // Update the cart content
+            // updateCartContent();
+            console.log("123");
+        }
+
+        function closeBot() {
+            botPopup.style.display = 'none'; // Hide the bot popup
+            botOverlay.style.display = 'none'; // Hide the bot overlay
+        }
+
+
 
         function updateCartContent() {
             // Fetch cart data
@@ -245,10 +281,9 @@
                 });
         }
 
-        function closeCart() {
-            cartPopup.style.display = 'none';
-            cartOverlay.style.display = 'none';
-        }
+
+        
+
 
         function addToCart(productName, textbxtid) {
 
