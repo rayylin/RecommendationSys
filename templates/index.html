@@ -176,6 +176,7 @@
     </div>
     <form method="POST" style="padding-top: 20px;">
         <label for="category">Select Category:</label>
+        <br>
         <select name="category" id="category" onchange="this.form.submit()">
             <option value="">-- Select --</option>
             {% for category in categories %}
@@ -226,11 +227,18 @@
     <div id="botPopup">
         <h2>Your bot</h2>
         <div id="cartItems"></div>
+
+        <textarea id="userinput"></textarea>
+        <br>
+        <button class="close-btn" onclick="submitQuestion()">Submit</button>
         <button class="close-btn" onclick="closeBot()">Close</button>
     </div>
 </div>
 
-    <script>        
+    <script>       
+    
+    
+        
         function redirectToProduct(ProductName) {            
             window.location.href = `/product/${ProductName}`;
         }
