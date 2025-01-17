@@ -93,6 +93,20 @@
             z-index: 999;
         }
 
+        #botPopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            z-index: 1000;
+        }
+
 
         .cart-item {
             margin: 10px 0;
@@ -206,7 +220,7 @@
     </div>
 
     <!-- Overlay -->
-    <div id="botOverlay"></div>
+    <div id="botOverlay">
 
     <!-- Popup -->
     <div id="botPopup">
@@ -214,6 +228,7 @@
         <div id="cartItems"></div>
         <button class="close-btn" onclick="closeBot()">Close</button>
     </div>
+</div>
 
     <script>        
         function redirectToProduct(ProductName) {            
