@@ -94,7 +94,7 @@
         }
 
         #botPopup {
-            display: none;
+            display: flex;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -196,6 +196,7 @@
         }
 
 
+
         
     </style>
 </head>
@@ -271,7 +272,8 @@
 
     <!-- Popup -->
     <div id="botPopup">
-        <h2>Your bot</h2>
+        <h2 >Your bot</h2>
+        <button class="close-btn" onclick="closeBot()">Close</button>
         
         <div class="chat-container" id="chat-container"></div>
         <div class="input-container">
@@ -283,7 +285,6 @@
         <!-- <br> -->
         <!-- <button onclick="sendMessage()">Send</button> -->
         <!-- <button class="close-btn" onclick="submitQuestion()">Submit</button> -->
-        <!-- <button class="close-btn" onclick="closeBot()">Close</button> -->
     </div>
 </div>
 
