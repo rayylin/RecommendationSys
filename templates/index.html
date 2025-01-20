@@ -150,6 +150,52 @@
             background-color: #e0e0e0; /* Optional: change background color on hover */
         }
 
+
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .message {
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            max-width: 60%;
+            word-wrap: break-word;
+        }
+        .message-left {
+            align-self: flex-start;
+            background-color: #f1f0f0;
+        }
+        .message-right {
+            align-self: flex-end;
+            background-color: #d1e7dd;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-container button {
+            padding: 10px 15px;
+            margin-left: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+
         
     </style>
 </head>
@@ -226,10 +272,16 @@
     <!-- Popup -->
     <div id="botPopup">
         <h2>Your bot</h2>
-        <div id="cartItems"></div>
+        
+        <div class="chat-container" id="chat-container"></div>
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
 
         <textarea id="userinput"></textarea>
         <br>
+        <button onclick="sendMessage()">Send</button>
         <button class="close-btn" onclick="submitQuestion()">Submit</button>
         <button class="close-btn" onclick="closeBot()">Close</button>
     </div>
@@ -397,6 +449,45 @@
         // Update the cart content
         updateCartContent();
         }
+
+
+
+        const chatContainer = document.getElementById('chat-container');
+
+        async function loadMessages() {
+            const response = await fetch('/messages');
+            const messages = await response.json();
+            chatContainer.innerHTML = '';
+            messages.forEach(msg => addMessage(msg.text, msg.sender === 'user'));
+        }
+
+        function addMessage(text, isRight) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', isRight ? 'message-right' : 'message-left');
+            messageDiv.textContent = text;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            if (message) {
+                addMessage(message, true);
+                await fetch('/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: message, sender: 'user' })
+                });
+                input.value = '';
+                loadMessages();
+            }
+        }
+
+        
+
+
+
 
 
     </script>

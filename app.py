@@ -229,6 +229,19 @@ def delete_from_cart():
 
 
 
+messages = []
+@app.route("/messages", methods=["GET", "POST"])
+def handle_messages():
+    if request.method == "POST":
+        # Add a new message
+        data = request.json
+        messages.append(data)
+        return jsonify({"status": "success"}), 201
+    elif request.method == "GET":
+        # Return all messages
+        return jsonify(messages)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
