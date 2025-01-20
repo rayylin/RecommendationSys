@@ -454,13 +454,6 @@
 
         const chatContainer = document.getElementById('chat-container');
 
-        async function loadMessages() {
-            const response = await fetch('/messages');
-            const messages = await response.json();
-            chatContainer.innerHTML = '';
-            messages.forEach(msg => addMessage(msg.text, msg.sender === 'user'));
-        }
-
         function addMessage(text, isRight) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', isRight ? 'message-right' : 'message-left');
@@ -471,16 +464,29 @@
 
         async function sendMessage() {
             const input = document.getElementById('message-input');
-            const message = input.value.trim();
-            if (message) {
-                addMessage(message, true);
-                await fetch('/messages', {
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
+
+            // Add the user's message to the chat
+            addMessage(userMessage, true);
+            input.value = '';
+
+            try {
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text: message, sender: 'user' })
+                    body: JSON.stringify({ message: userMessage })
                 });
-                input.value = '';
-                loadMessages();
+
+                const data = await response.json();
+                if (data.response) {
+                    // Add the assistant's response to the chat
+                    addMessage(data.response, false);
+                } else {
+                    addMessage("Error: " + (data.error || "Unknown error"), false);
+                }
+            } catch (error) {
+                addMessage("Error: Unable to communicate with the server.", false);
             }
         }
 

@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, render_template, request
 import pyodbc
+import openai
 
 from config import key1, openaikey
 
 okey = openaikey
+
+openai.api_key = okey
 
 
 app = Flask(__name__)
@@ -240,6 +243,30 @@ def handle_messages():
     elif request.method == "GET":
         # Return all messages
         return jsonify(messages)
+    
+
+@app.route("/chat", methods=["POST"])
+def chat_with_gpt():
+    data = request.json
+    user_message = data.get("message", "")
+    
+    if not user_message:
+        return jsonify({"error": "Message is required"}), 400
+
+    try:
+        # Call the OpenAI API
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_message}
+            ]
+        )
+        gpt_response = response['choices'][0]['message']['content']
+        return jsonify({"response": gpt_response})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 
