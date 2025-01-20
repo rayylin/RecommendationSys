@@ -256,13 +256,13 @@ def chat_with_gpt():
     try:
         # Call the OpenAI API
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",  # Specify the model version
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message}
             ]
         )
-        gpt_response = response['choices'][0]['message']['content']
+        gpt_response = response.choices[0].message.content
         return jsonify({"response": gpt_response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
