@@ -6,7 +6,7 @@ from config import key1, openaikey
 
 okey = openaikey
 
-openai.api_key = okey
+# openai.api_key = okey
 
 
 app = Flask(__name__)
