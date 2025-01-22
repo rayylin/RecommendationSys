@@ -4,6 +4,8 @@ import openai
 
 from config import key1, openaikey
 
+from Embedding import chatbot_response_rag
+
 okey = openaikey
 
 # openai.api_key = okey
@@ -257,6 +259,10 @@ def chat_with_gpt():
                 {"role": "user", "content": user_message}
             ]
         )
+
+        chatbot_response_rag("Where is apple")
+
+
         gpt_response = response.choices[0].message.content
         return jsonify({"response": gpt_response})
     except Exception as e:
