@@ -5,6 +5,15 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.schema import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+from langchain.vectorstores import Chroma
+from langchain.schema import Document  # Import Document class
+from langchain.chat_models import ChatOpenAI
+
+
+
 from config import key1, openaikey, filePath
 
 OPENAI_API_KEY = openaikey
@@ -56,6 +65,10 @@ def create_faiss_vector_store(file_path):
     
     return chunk_embeddings  # Optionally return embeddings for further use
 
-#
 
-create_faiss_vector_store(file_path1)
+docs = create_faiss_vector_store(file_path1)
+
+
+
+
+
