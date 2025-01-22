@@ -70,5 +70,49 @@ docs = create_faiss_vector_store(file_path1)
 
 
 
+docs = [
+"Clothing (Aisle 1): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+,"Electronics (Aisle 4): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
+,"Food (Aisle 5): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
+,"Furniture (Aisle 3): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
+,"Personal Care (Aisle 2): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"
+]
+
+# Convert raw document texts to LangChain Document objects
+documents = [Document(page_content=doc) for doc in docs]
+
+embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+
+# Create Chroma vector store
+vectorstore = Chroma.from_documents(documents, embeddings)
+
+# Initialize the chat model with OpenAI
+chat_model = ChatOpenAI(model="gpt-3.5-turbo", api_key=OPENAI_API_KEY)
+
+# Set up a prompt template
+prompt_template = PromptTemplate(
+    template="Answer the question based on the following documents:\n\n{context}\n\nQuestion: {question}\nAnswer:",
+    input_variables=["context", "question"]
+)
+
+# Initialize Retrieval-based Q&A chain
+rag_chain = RetrievalQA.from_chain_type(
+    llm=chat_model,
+    retriever=vectorstore.as_retriever(),  # Use Chroma as retriever
+    chain_type="stuff"  # "stuff" combines the documents as context
+)
+
+# Function to perform RAG and generate chatbot responses
+def chatbot_response_rag(user_input):
+    # Use the RAG chain to generate a response with document retrieval
+    response = rag_chain.run({"query": user_input})
+    return response
+
+
+response = chatbot_response_rag("where is food?")
+print("Chatbot:", response)
+
+
+
 
 
