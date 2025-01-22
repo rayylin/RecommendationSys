@@ -8,13 +8,8 @@ okey = openaikey
 
 # openai.api_key = okey
 
-
 app = Flask(__name__)
 
-cart_data = [
-    {"id": 1, "name": "Product 1", "price": 10.99, "quantity": 2},
-    {"id": 2, "name": "Product 2", "price": 15.99, "quantity": 1},
-]
 
 # Database connection using Windows Authentication
 conn = pyodbc.connect(
