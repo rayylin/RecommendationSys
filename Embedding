@@ -109,7 +109,7 @@ def chatbot_response_rag(user_input):
     return response
 
 
-response = chatbot_response_rag("where is food?")
+response = chatbot_response_rag("where is Apple?")
 print("Chatbot:", response)
 
 
