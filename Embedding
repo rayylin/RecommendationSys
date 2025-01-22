@@ -1,0 +1,61 @@
+import pdfplumber
+import numpy as np
+from pymongo import MongoClient
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+from config import key1, openaikey
+
+OPENAI_API_KEY = openaikey
+
+file_path1 = "C:\\Users\\dwade\\Downloads\\productLocation.pdf"
+
+
+
+# Function to extract text from PDF
+def extract_text_from_pdf(file_path):
+    text = ""
+    with pdfplumber.open(file_path) as pdf:
+        for page in pdf.pages:
+            text += page.extract_text() + "\n"
+    return text
+
+# Function to chunk text for embedding
+def chunk_text(text, chunk_size=500, chunk_overlap=100):
+    splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    return splitter.split_text(text)
+
+# Initialize OpenAI Embeddings
+embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+
+# Function to create embeddings for each chunk of text
+def create_embeddings(chunks):
+    # Convert chunks into Document objects (required for LangChain FAISS store)
+    documents = [Document(page_content=chunk) for chunk in chunks]
+    # Extract page_content from documents to pass to embed_documents()
+    document_texts = [doc.page_content for doc in documents]
+    embeddings_result = embeddings.embed_documents(document_texts)
+    
+    # Return the embeddings as a numpy array for storage
+    return np.array(embeddings_result).astype("float32")
+
+# Function to create FAISS vector store
+def create_faiss_vector_store(file_path):
+    # Extract text from the PDF
+    text = extract_text_from_pdf(file_path)
+    
+    # Chunk the text
+    chunks = chunk_text(text)
+    
+    # Create embeddings for each chunk
+    chunk_embeddings = create_embeddings(chunks)
+    
+    # Insert the chunks and embeddings into MongoDB
+    # insert_embeddings_to_mongodb(chunks, chunk_embeddings)
+    
+    return chunk_embeddings  # Optionally return embeddings for further use
+
+#
+
+create_faiss_vector_store(file_path1)
