@@ -8,7 +8,7 @@ from Embedding import chatbot_response_rag
 
 okey = openaikey
 
-# openai.api_key = okey
+openai.api_key = okey
 
 app = Flask(__name__)
 
@@ -252,19 +252,20 @@ def chat_with_gpt():
 
     try:
         # Call the OpenAI API
-        response = openai.ChatCompletion.create(
-            model="gpt-4",  # Specify the model version
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": user_message}
-            ]
-        )
+        # response = openai.ChatCompletion.create(
+        #     model="gpt-4",  # Specify the model version
+        #     messages=[
+        #         {"role": "system", "content": "You are a helpful assistant."},
+        #         {"role": "user", "content": user_message}
+        #     ]
+        # )
+        # gpt_response = response.choices[0].message.content
+        
+        # call rag from embedding.py
+        response = chatbot_response_rag("Where is apple")
 
-        chatbot_response_rag("Where is apple")
 
-
-        gpt_response = response.choices[0].message.content
-        return jsonify({"response": gpt_response})
+        return jsonify({"response": response})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
