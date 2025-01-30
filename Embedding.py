@@ -115,5 +115,27 @@ print("Chatbot:", response)
 
 
 
+# handling mongodb
+
+from pymongo import MongoClient
+import numpy as np
+
+# Connect to MongoDB
+client = MongoClient("mongodb://localhost:27017/")
+db = client["vector_db"]  # Database name
+collection = db["vectors"]  # Collection name
+
+# Generate embeddings and store in MongoDB
+for i, doc in enumerate(documents):
+    vector = embeddings.embed_query(doc.page_content)  # Generate embedding
+    document = {
+        "id": i + 1,
+        "text": doc.page_content,
+        "embedding": vector
+    }
+    collection.insert_one(document)
+print("Vector stored successfully!")
+
+
 
 
