@@ -139,3 +139,24 @@ print("Vector stored successfully!")
 
 
 
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Query text
+query_text = "Shoes and clothing items"
+
+# Generate embedding for query
+query_vector = np.array(embeddings.embed_query(query_text)).reshape(1, -1)
+
+# Fetch all stored embeddings
+stored_docs = list(collection.find({}, {"_id": 0, "embedding": 1, "text": 1}))
+
+# Convert embeddings to numpy array
+stored_vectors = np.array([doc["embedding"] for doc in stored_docs])
+
+# Compute similarity
+similarities = cosine_similarity(query_vector, stored_vectors)
+most_similar_index = np.argmax(similarities)
+
+print("Most similar document:", stored_docs[most_similar_index]["text"])
+
+
