@@ -69,18 +69,20 @@ def create_faiss_vector_store(file_path):
 docs = create_faiss_vector_store(file_path1)
 
 
+# docs should be a string
+docs = ["""{ "Queens Store":"Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+,Electronics (Aisle 5): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
+,Food (Aisle 7): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
+,Furniture (Aisle 2): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
+,Personal Care (Aisle 6): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion",
+{"Chatham":["Clothing (Aisle 1): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+ ,"Electronics (Aisle 4): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
+ ,"Food (Aisle 5): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
+ ,"Furniture (Aisle 3): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
+ ,"Personal Care (Aisle 2): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"],}
+}"""]
 
-docs = [{"Chatham":["Clothing (Aisle 1): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
-,"Electronics (Aisle 4): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
-,"Food (Aisle 5): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
-,"Furniture (Aisle 3): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
-,"Personal Care (Aisle 2): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"],
-"Queens":["Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
-,"Electronics (Aisle 5): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
-,"Food (Aisle 7): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
-,"Furniture (Aisle 2): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
-,"Personal Care (Aisle 6): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"]
-}]
+
 
 # Convert raw document texts to LangChain Document objects
 documents = [Document(page_content=doc) for doc in docs]
@@ -113,7 +115,7 @@ def chatbot_response_rag(user_input):
     return response
 
 
-response = chatbot_response_rag("where is Apple?")
+response = chatbot_response_rag("where is Apple in Queens?")
 print("Chatbot:", response)
 
 
