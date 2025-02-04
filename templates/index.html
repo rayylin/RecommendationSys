@@ -499,6 +499,7 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('zip_display').innerText = data.updated_zip;
+                document.cookie = "selected_zip=" + data.updated_zip + "; path=/";
             })
             .catch(error => console.error('Error:', error));
         }

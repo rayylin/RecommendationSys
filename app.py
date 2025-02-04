@@ -60,6 +60,8 @@ def index():
         )
         products = cursor.fetchall()
 
+    selected_zip = request.cookies.get("selected_zip", "")  # Retrieve ZIP from cookie
+
     return render_template('index.html', categories=categories, products=products, codes=codes)
 
 
@@ -68,9 +70,9 @@ def update_zip():
     data = request.get_json()
     selected_zip = data.get("zip")
 
-    # Process the selected ZIP if needed (e.g., filter data, update session, etc.)
-    
-    return jsonify({"updated_zip": selected_zip})
+    response = jsonify({"updated_zip": selected_zip})
+    response.set_cookie("selected_zip", selected_zip, max_age=60*60*24)  # Store for 1 day
+    return response
 
 
 @app.route('/product/<string:product_id>')
@@ -277,10 +279,13 @@ def chat_with_gpt():
         # )
         # gpt_response = response.choices[0].message.content
         
-        store = 123
+        storeCookie =  request.cookies.get("selected_zip", "No ZIP selected") # Manhattan, NY, 10001
+
+        store = "" # storeCookie.split(",")[0].strip()
+
 
         # call rag from embedding.py
-        response = chatbot_response_rag("Where is apple in queens")
+        response = chatbot_response_rag(f"Where is apple in {store}")
 
 
         return jsonify({"response": response})
