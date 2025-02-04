@@ -204,7 +204,7 @@
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
         
-        <form method="POST" style="padding-left: 20px;">
+        <div>
             <label for="zip">Select Your Location:</label>
             <br>
             <select name="zip" id="zip" onchange="this.form.submit()">
@@ -216,7 +216,8 @@
                 {% endfor %}
             </select>
             <br>
-        </form>
+        </div>
+        
         <h1>Online Store</h1>
         <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
         <img src="{{ url_for('static', filename='chatbot.jpg') }}" class="cart" alt="AI assistant" onclick="popupBot()">

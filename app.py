@@ -261,6 +261,8 @@ def chat_with_gpt():
         # )
         # gpt_response = response.choices[0].message.content
         
+        store = 123
+
         # call rag from embedding.py
         response = chatbot_response_rag("Where is apple in queens")
 
