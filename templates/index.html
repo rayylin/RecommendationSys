@@ -204,7 +204,8 @@
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
         
-        <div>
+        <form  method="POST" style="padding-left: 20px;">
+            <input type="hidden" name="form_type" value="zip_form">
             <label for="zip">Select Your Location:</label>
             <br>
             <select name="zip" id="zip" onchange="this.form.submit()">
@@ -216,13 +217,14 @@
                 {% endfor %}
             </select>
             <br>
-        </div>
-        
+        </form>
+
         <h1>Online Store</h1>
         <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
         <img src="{{ url_for('static', filename='chatbot.jpg') }}" class="cart" alt="AI assistant" onclick="popupBot()">
     </div>
     <form method="POST" style="padding-top: 20px;">
+        <input type="hidden" name="form_type" value="catgory_form">
         <label for="category">Select Category:</label>
         <br>
         <select name="category" id="category" onchange="this.form.submit()">

@@ -38,6 +38,11 @@ def index():
                        WHERE [Status] = 'A'""")
     codes = cursor.fetchall()
 
+    if request.method == "POST":
+        form_type = request.form.get("form_type")
+
+        
+
     products = []
 
     if selected_category:
