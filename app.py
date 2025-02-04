@@ -41,7 +41,7 @@ def index():
     if request.method == "POST":
         form_type = request.form.get("form_type")
 
-        
+
 
     products = []
 
@@ -61,6 +61,17 @@ def index():
         products = cursor.fetchall()
 
     return render_template('index.html', categories=categories, products=products, codes=codes)
+
+
+@app.route("/update_zip", methods=["POST"])
+def update_zip():
+    data = request.get_json()
+    selected_zip = data.get("zip")
+
+    # Process the selected ZIP if needed (e.g., filter data, update session, etc.)
+    
+    return jsonify({"updated_zip": selected_zip})
+
 
 @app.route('/product/<string:product_id>')
 def product_page(product_id):

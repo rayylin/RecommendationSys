@@ -204,20 +204,15 @@
     <div class="header">
         <img src="{{ url_for('static', filename='logo.png') }}" class="logo" alt="Logo">
         
-        <form  method="POST" style="padding-left: 20px;">
-            <input type="hidden" name="form_type" value="zip_form">
-            <label for="zip">Select Your Location:</label>
-            <br>
-            <select name="zip" id="zip" onchange="this.form.submit()">
-                <option value="">-- Select --</option>
-                {% for code in codes %}
-                <option value="{{ code.zipcode }}" {% if request.form.category ==  code.zipcode|string %}selected{% endif %}>
-                    {{ code.zipcode }}
-                </option>
-                {% endfor %}
-            </select>
-            <br>
-        </form>
+        
+        <select name="zip" id="zip" onchange="updateZip(this.value)">
+            <option value="">-- Select --</option>
+            {% for code in codes %}
+            <option value="{{ code.zipcode }}" {% if selected_zip == code.zipcode|string %}selected{% endif %}>
+                {{ code.zipcode }}
+            </option>
+            {% endfor %}
+        </select>
 
         <h1>Online Store</h1>
         <img src="{{ url_for('static', filename='cart.jpg') }}" class="cart" alt="cart" onclick="popupCart()">
@@ -495,7 +490,18 @@
         }
 
         
-
+        function updateZip(zip) {
+            fetch('/update_zip', {
+                method: 'POST',
+                body: JSON.stringify({ zip: zip }),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('zip_display').innerText = data.updated_zip;
+            })
+            .catch(error => console.error('Error:', error));
+        }
 
 
 
