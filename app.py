@@ -285,7 +285,7 @@ def chat_with_gpt():
 
 
         # call rag from embedding.py
-        response = chatbot_response_rag(f"Where is apple in {store}")
+        response = chatbot_response_rag(f"{user_message} in store {store}")
 
 
         return jsonify({"response": response})
