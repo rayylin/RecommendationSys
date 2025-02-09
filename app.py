@@ -281,7 +281,7 @@ def chat_with_gpt():
         
         storeCookie =  request.cookies.get("selected_zip", "No ZIP selected") # Manhattan, NY, 10001
 
-        store = "" # storeCookie.split(",")[0].strip()
+        store = storeCookie.split(",")[0].strip()
 
 
         # call rag from embedding.py
