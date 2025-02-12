@@ -70,17 +70,23 @@ docs = create_faiss_vector_store(file_path1)
 
 
 # docs should be a string
-docs = ["""{ "Queens Store":"Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+# docs = ["""{ "Queens Store":"Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+# ,Electronics (Aisle 5): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
+# ,Food (Aisle 7): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
+# ,Furniture (Aisle 2): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
+# ,Personal Care (Aisle 6): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion",
+# {"Chatham":["Clothing (Aisle 1): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
+#  ,"Electronics (Aisle 4): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
+#  ,"Food (Aisle 5): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
+#  ,"Furniture (Aisle 3): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
+#  ,"Personal Care (Aisle 2): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"],}
+# }"""]
+
+docs = ["""Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
 ,Electronics (Aisle 5): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
 ,Food (Aisle 7): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
 ,Furniture (Aisle 2): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
-,Personal Care (Aisle 6): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion",
-{"Chatham":["Clothing (Aisle 1): [T-shirt,Jeans,Jacket,Sneakers,Hat,Dress,Socks,Gloves,Scarf,Sweater,Shorts,Belt,Coat,Sandals]"
- ,"Electronics (Aisle 4): [cellphone,Laptop,Tablet,Headphones,Camera,Television,Smartwatch,Speaker,Drone,Gaming Console,Printer,Keyboard]"
- ,"Food (Aisle 5): Apple,Banana,Orange,Bread,Milk,Cheese,Yogurt,Chicken"
- ,"Furniture (Aisle 3): Chair,Desk,Sofa,Bed,Coffee Table,Wardrobe,Bookshelf,Dining Table,Nightstand,Dresser"
- ,"Personal Care (Aisle 2): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"],}
-}"""]
+,Personal Care (Aisle 6): Shampoo,Soap,Toothpaste,Deodorant,Face Wash,Lotion"""]
 
 
 
@@ -88,6 +94,34 @@ docs = ["""{ "Queens Store":"Clothing (Aisle 3): [T-shirt,Jeans,Jacket,Sneakers,
 documents = [Document(page_content=doc) for doc in docs]
 
 embeddings = OpenAIEmbeddings(api_key=OPENAI_API_KEY)
+
+embedded_docs = [embeddings.embed_query(doc.page_content) for doc in documents]
+
+from config import mongo
+
+# MongoDB connection string
+MONGO_URI = mongo
+
+# Connect to MongoDB
+client = MongoClient(MONGO_URI)
+db = client["testdb"]  # Create or connect to a database
+collection = db["StoreInfo"]  
+
+# Insert a document
+data = {"_id":"Yv","store": "Queens", "layout": embedded_docs}
+insert_result = collection.insert_one(data)
+print(f"Inserted document ID: {insert_result.inserted_id}")
+
+# Read documents
+print("Reading documents from MongoDB:")
+for doc in collection.find():
+    print(doc)
+
+# Close the connection
+client.close()
+
+
+
 
 # Create Chroma vector store
 vectorstore = Chroma.from_documents(documents, embeddings)
@@ -123,46 +157,46 @@ print("Chatbot:", response)
 
 # handling mongodb
 
-from pymongo import MongoClient
-import numpy as np
+# from pymongo import MongoClient
+# import numpy as np
 
-# Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")
-db = client["vector_db"]  # Database name
-collection = db["vectors"]  # Collection name
+# # Connect to MongoDB
+# client = MongoClient("mongodb://localhost:27017/")
+# db = client["vector_db"]  # Database name
+# collection = db["vectors"]  # Collection name
 
-# Generate embeddings and store in MongoDB
-for i, doc in enumerate(documents):
-    vector = embeddings.embed_query(doc.page_content)  # Generate embedding
-    document = {
-        "id": i + 1,
-        "text": doc.page_content,
-        "embedding": vector
-    }
-    collection.insert_one(document)
-print("Vector stored successfully!")
-
-
+# # Generate embeddings and store in MongoDB
+# for i, doc in enumerate(documents):
+#     vector = embeddings.embed_query(doc.page_content)  # Generate embedding
+#     document = {
+#         "id": i + 1,
+#         "text": doc.page_content,
+#         "embedding": vector
+#     }
+#     collection.insert_one(document)
+# print("Vector stored successfully!")
 
 
-from sklearn.metrics.pairwise import cosine_similarity
 
-# Query text
-query_text = "Shoes and clothing items"
 
-# Generate embedding for query
-query_vector = np.array(embeddings.embed_query(query_text)).reshape(1, -1)
+# from sklearn.metrics.pairwise import cosine_similarity
 
-# Fetch all stored embeddings
-stored_docs = list(collection.find({}, {"_id": 0, "embedding": 1, "text": 1}))
+# # Query text
+# query_text = "Shoes and clothing items"
 
-# Convert embeddings to numpy array
-stored_vectors = np.array([doc["embedding"] for doc in stored_docs])
+# # Generate embedding for query
+# query_vector = np.array(embeddings.embed_query(query_text)).reshape(1, -1)
 
-# Compute similarity
-similarities = cosine_similarity(query_vector, stored_vectors)
-most_similar_index = np.argmax(similarities)
+# # Fetch all stored embeddings
+# stored_docs = list(collection.find({}, {"_id": 0, "embedding": 1, "text": 1}))
 
-print("Most similar document:", stored_docs[most_similar_index]["text"])
+# # Convert embeddings to numpy array
+# stored_vectors = np.array([doc["embedding"] for doc in stored_docs])
+
+# # Compute similarity
+# similarities = cosine_similarity(query_vector, stored_vectors)
+# most_similar_index = np.argmax(similarities)
+
+# print("Most similar document:", stored_docs[most_similar_index]["text"])
 
 
