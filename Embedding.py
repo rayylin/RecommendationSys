@@ -108,7 +108,7 @@ db = client["testdb"]  # Create or connect to a database
 collection = db["StoreInfo"]  
 
 # Insert a document
-data = {"_id":"Yv","store": "Queens", "layout": embedded_docs}
+data = {"_id":"StoreQueens","store": "Queens", "layout": embedded_docs}
 insert_result = collection.insert_one(data)
 print(f"Inserted document ID: {insert_result.inserted_id}")
 
