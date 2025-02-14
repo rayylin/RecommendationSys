@@ -129,6 +129,9 @@ vectorstore = Chroma.from_documents(documents, embeddings)
 # Initialize the chat model with OpenAI
 chat_model = ChatOpenAI(model="gpt-3.5-turbo", api_key=OPENAI_API_KEY)
 
+
+
+# We should use similarity search tools to find related context, instead of passing vector into openai
 # Set up a prompt template
 prompt_template = PromptTemplate(
     template="Answer the question based on the following documents:\n\n{context}\n\nQuestion: {question}\nAnswer:",
