@@ -262,6 +262,7 @@ def handle_messages():
 
 # We should perform similarity search and pass text with highest similarity to openai, instead of vector
 # to prevent users from sending too many requests to database, we can store vector in redis for caching 
+# similarity search: FAISS (Python), RediSearch, Azure AI Search, MongoDB Atlas Search
 
 @app.route("/chat", methods=["POST"])
 def chat_with_gpt():
