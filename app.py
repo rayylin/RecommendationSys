@@ -260,6 +260,9 @@ def handle_messages():
         return jsonify(messages)
     
 
+# We should perform similarity search and pass text with highest similarity to openai, instead of vector
+# to prevent users from sending too many requests to database, we can store vector in redis for caching 
+
 @app.route("/chat", methods=["POST"])
 def chat_with_gpt():
     data = request.json
