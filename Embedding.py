@@ -108,9 +108,9 @@ db = client["testdb"]  # Create or connect to a database
 collection = db["StoreInfo"]  
 
 # Insert a document
-data = {"_id":"StoreQueens","store": "Queens", "layout": embedded_docs}
-insert_result = collection.insert_one(data)
-print(f"Inserted document ID: {insert_result.inserted_id}")
+# data = {"_id":"StoreQueens","store": "Queens", "layout": embedded_docs}
+# insert_result = collection.insert_one(data)
+# print(f"Inserted document ID: {insert_result.inserted_id}")
 
 # Read documents
 print("Reading documents from MongoDB:")
