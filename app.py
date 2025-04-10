@@ -176,9 +176,10 @@ def cart():
             ,B.[ProductName]
 	        ,B.[NewPrice]
         FROM [RecSys].[dbo].[Cart] A
-        INNER JOIN [RecSys].[dbo].[Products] B
-            ON A.[ProductID] = B.[productID]
-        WHERE A.[UserID] = ?
+       INNER JOIN [RecSys].[dbo].[Products] B
+          ON A.[ProductID] = B.[productID]
+       WHERE A.[UserID] = ?
+       ORDER BY A.[updatetime] DESC
     """, userid)
 
     carts  = cursor.fetchall()
