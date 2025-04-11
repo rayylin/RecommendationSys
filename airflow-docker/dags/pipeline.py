@@ -35,7 +35,7 @@ with DAG(
     dag_id='fetch_transform_stock_data',
     default_args=default_args,
     description='Fetch stock data and process anomalies',
-    start_date=datetime(2025, 4, 10),
+    start_date=datetime(2025, 4, 9),
     schedule_interval='*/5 * * * *',  # every 5 minutes
     catchup=False
 ) as dag:

@@ -22,7 +22,7 @@ services:
       AIRFLOW__WEBSERVER__SECRET_KEY: 'mysecretkey'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow-docker/dags:/opt/airflow/dags
     ports:
       - 8080:8080
     command: webserver
@@ -39,7 +39,7 @@ services:
       AIRFLOW__WEBSERVER__SECRET_KEY: 'mysecretkey'
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     volumes:
-      - ./dags:/opt/airflow/dags
+      - ./airflow-docker/dags:/opt/airflow/dags
     command: scheduler
     restart: always
 
