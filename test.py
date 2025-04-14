@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-def fetch_data(symbol='TSLA', **kwargs):
+def fetch_data(symbol='SNOW', **kwargs):
     url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={symbol}&interval=1min&apikey=YOUR_API_KEY'
     response = requests.get(url)
     data = response.json()
